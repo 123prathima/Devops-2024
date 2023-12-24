@@ -1,0 +1,26 @@
+pipeline {
+    agent { label 'slave01' }
+
+    stages {
+        stage('Hello') {
+            steps {
+                echo 'Hello World'
+            }
+        }
+    }
+
+    post {
+        success {
+            emailext subject: 'Success - ${JOB_NAME} #${BUILD_NUMBER}',
+                      body: 'Build successful. Check console output at ${BUILD_URL}',
+                      to: 'your-email@example.com',
+                      recipientProviders: [[$class: 'RequesterRecipientProvider']]
+        }
+        failure {
+            emailext subject: 'Failure - ${JOB_NAME} #${BUILD_NUMBER}',
+                      body: 'Build failed. Check console output at ${BUILD_URL}',
+                      to: 'your-email@example.com',
+                      recipientProviders: [[$class: 'RequesterRecipientProvider']]
+        }
+    }
+}
